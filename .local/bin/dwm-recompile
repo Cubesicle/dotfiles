@@ -1,6 +1,0 @@
-#!/bin/bash
-
-cd ~/.config/dwm
-sudo make clean install
-cd ~/.config/dwm/dwmblocks
-sudo make clean install
