@@ -1,0 +1,7 @@
+#!/bin/bash
+
+IGNORE="wine-tkg-staging-fsync-git"
+
+OUTPUT=$(cat /etc/pacman.conf; printf "[chaotic-aur]\nInclude = /etc/pacman.d/chaotic-mirrorlist\n[options]\nIgnorePkg = $IGNORE")
+printf "$OUTPUT" > /tmp/pacman-chaotic.conf
+sudo pacman --config /tmp/pacman-chaotic.conf $@

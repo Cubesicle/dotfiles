@@ -1,0 +1,6 @@
+#!/bin/bash
+
+PROTON_PATH=~/.local/share/Steam/compatibilitytools.d/Proton-6.16-GE-1
+
+cd $PROTON_PATH
+STEAM_COMPAT_DATA_PATH="$HOME/.proton" ./proton

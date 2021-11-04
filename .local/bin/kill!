@@ -1,0 +1,4 @@
+#!/bin/bash
+
+USER=`whoami`
+pkill -U $USER
