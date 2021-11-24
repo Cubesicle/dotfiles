@@ -16,6 +16,7 @@ dir="$HOME/.config/rofi/launchers/text"
 styles=($(ls -p --hide="colors.rasi" $dir/styles))
 #color="${styles[$(( $RANDOM % 10 ))]}"
 color="dracula"
+font="CodeNewRoman Nerd Font 14"
 
 # comment this line to disable random colors
 sed -i -e "s/@import .*/@import \"$color\"/g" $dir/styles/colors.rasi
