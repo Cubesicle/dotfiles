@@ -1,0 +1,11 @@
+*
+
+!.gitignore
+
+!.config/lvim/config.lua
+!.oh-my-zsh/themes/fox.zsh-theme
+
+!.xinitrc
+!.xprofile
+!.zprofile
+!.zshrc

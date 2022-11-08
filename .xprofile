@@ -1,0 +1,12 @@
+# pipewire
+gentoo-pipewire-launcher &
+
+# gnome keyring
+dbus-update-activation-environment --all
+gnome-keyring-daemon --start --components=secrets
+
+# remap caps to escape
+setxkbmap -option caps:escape
+
+# launch dwm
+dbus-launch dwm
