@@ -2,11 +2,12 @@
 lvim.plugins = {
     {
         "ggandor/leap.nvim",
-        requires = "tpope/vim-repeat",
+        requires = { "tpope/vim-repeat" },
         config = function()
             require('leap').add_default_mappings()
         end,
     },
+    { "mattn/emmet-vim" },
 }
 
 -- Other stuff
