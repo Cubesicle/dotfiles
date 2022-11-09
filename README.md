@@ -4,8 +4,22 @@ these are my dotfiles woah
 
 ## Installation
 
-1. Clone the repo `cd $HOME; git clone --bare https://github.com/Cubesicle/dotfiles.git $HOME/.dotfiles` and be sure to remove any files that are in conflict.
-2. Restart zsh in order for the "dots" alias to work.
+1. Run this in the terminal:
+```bash
+# Define alias
+alias dots="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+
+# Clone the repository
+git clone --bare https://github.com/Cubesicle/dotfiles.git $HOME/.dotfiles
+
+# Hide untracked files
+dots config --local status.showUntrackedFiles no
+
+# Checkout content
+dots checkout
+```
+2. Move or remove any files that are in conflict and run `dots checkout` again.
+3. ur done.
 
 ## Managing the dotfiles
 
