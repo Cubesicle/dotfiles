@@ -4,11 +4,12 @@ these are my dotfiles woah
 
 ## Installation
 
-1. Run this in the terminal:
+1. Set the "dots" alias:
 ```bash
-# Define alias
 alias dots="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
-
+```
+2. Run this in the terminal:
+```bash
 # Clone the repository
 git clone --bare https://github.com/Cubesicle/dotfiles.git $HOME/.dotfiles
 
@@ -18,8 +19,8 @@ dots config --local status.showUntrackedFiles no
 # Checkout content
 dots checkout
 ```
-2. Move or remove any files that are in conflict and run `dots checkout` again.
-3. ur done.
+3. Move or remove any files that are in conflict and run `dots checkout` again.
+4. ur done.
 
 ## Managing the dotfiles
 
