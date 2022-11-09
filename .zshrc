@@ -100,6 +100,9 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Dotfiles management alias
+alias config="/usr/bin/git --git-dir=$HOME/dotfiles/ --work-tree=$HOME"
+
 export PATH=$HOME/.local/bin:$HOME/.cargo/bin:$PATH
 export EDITOR='lvim'
 neofetch
