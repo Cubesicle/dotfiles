@@ -4,10 +4,10 @@
     "diagnostics.globals": [
         "awesome",
         "client",
-        "screen",
-        "lfs"
+        "root",
+        "screen"
     ],
     "workspace.library": [
-        "${3rd}/lfs/library",
-    ],
+        "${3rd}/lfs/library"
+    ]
 }

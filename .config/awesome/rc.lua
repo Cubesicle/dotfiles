@@ -17,6 +17,38 @@ require("awful.hotkeys_popup.keys")
 
 local config = require("config");
 
+-- Functions
+local debug_print = function(message)
+    naughty.notify({
+        title = "Debug",
+        text = tostring(message),
+    })
+end
+
+-- TODO: fix this shit
+local sort_screens = function()
+    local screens = 0 -- The number of screens
+
+    local sorted_screens = { } -- An array of screen indexes sorted by x position
+    for s in screen do
+        screens = screens + 1 -- Increase the screen variable every time it finds a screen
+        table.insert(sorted_screens, { index = s.index, x = s.geometry.x }) -- Fill up the sorted_screens table
+    end
+    table.sort(sorted_screens, function(a, b) return a.x < b.x end) -- Sort the screens by x position
+
+    for _ = 1, screens, 1 do
+        screen.fake_add(0, 0, 0, 0) -- Add as many fake screens as there are real screens (value of screens will double)
+    end
+    for i = 1, screens, 1 do
+        screen[i]:swap(screen[sorted_screens[i].index + screens]) -- Swap out the fake screens with real screens using the indexes in the sorted_screens table
+        debug_print(i .. "->" .. sorted_screens[i].index)
+    end
+    for _ = 1, screens, 1 do
+        screen[1]:fake_remove() -- Remove the fake screens
+    end
+    debug_print(gears.debug.dump_return(sorted_screens))
+end
+
 -- Error handling
 if awesome.startup_errors then
     naughty.notify({
@@ -48,78 +80,65 @@ beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
 -- Set Layouts
 awful.layout.layouts = config.layouts
 
+-- Set keys
+root.keys(config.keybinds)
+
+-- Sort screens
+-- sort_screens()
+
 -- {{{ User Interface
 -- Display widgets on all screens
-awful.screen.connect_for_each_screen(function(screen)
+awful.screen.connect_for_each_screen(function(s)
     -- Set tag table for each screen
-    awful.tag(config.tags, screen, awful.layout.layouts[1])
+    awful.tag(config.tags, s, awful.layout.layouts[1])
 
     -- Create a taglist widget
-    screen.taglist = awful.widget.taglist {
-        screen  = screen,
+    s.taglist = awful.widget.taglist {
+        screen  = s,
         filter  = awful.widget.taglist.filter.all,
         buttons = gears.table.join(
-            awful.button({ }, 1, function(tag) tag:view_only() end),
-            awful.button({ config.modkey }, 1, function(tag)
-                if client.focus then
-                    client.focus:move_to_tag(tag)
-                end
-            end),
-            awful.button({ }, 3, awful.tag.viewtoggle),
-            awful.button({ config.modkey }, 3, function(tag)
-                if client.focus then
-                    client.focus:toggle_tag(tag)
-                end
-            end),
-            awful.button({ }, 4, function(tag) awful.tag.viewnext(tag.screen) end),
-            awful.button({ }, 5, function(tag) awful.tag.viewprev(tag.screen) end)
+            awful.button({ }, 1, function(tag) tag:view_only() end)
         )
     }
 
     -- Create a tasklist widget
-    screen.tasklist = awful.widget.tasklist {
-        screen  = screen,
+    s.tasklist = awful.widget.tasklist {
+        screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
         buttons = gears.table.join(
             awful.button({ }, 1, function(c)
-                if c == client.focus then
-                    c.minimized = true
-                else
                 c:emit_signal(
                     "request::activate",
                     "tasklist",
-                    {raise = true}
-                    )
-                end
+                    { raise = true }
+                )
             end),
-            awful.button({ }, 3, function()
-                awful.menu.client_list({ theme = { width = 250 } })
-            end),
-            awful.button({ }, 4, function()
-                awful.client.focus.byidx(1)
-            end),
-            awful.button({ }, 5, function()
-                awful.client.focus.byidx(-1)
-            end)
+            awful.button({ }, 2, function(c) c:kill() end)
         )
     }
 
     -- Create the bar
-    screen.bar = awful.wibar({ position = "top", screen = screen })
+    s.bar = awful.wibar({ position = "top", screen = s })
 
     -- Add widgets to the wibox
-    screen.bar:setup {
+    s.bar:setup {
         layout = wibox.layout.align.horizontal,
 
         -- Left widgets
         {
             layout = wibox.layout.fixed.horizontal,
-            screen.taglist,
-            --screen.mylayoutbox,
+            s.taglist,
+            --s.mylayoutbox,
+            wibox.widget{
+                markup = " Screen #" .. s.index .. " x: " .. s.geometry.x .. " y: " .. s.geometry.y,
+                align  = "center",
+                valign = "center",
+                widget = wibox.widget.textbox,
+            },
         },
 
         -- Middle widget
-        screen.tasklist,
+        s.tasklist,
 
         -- Right widgets
         {
@@ -130,3 +149,29 @@ awful.screen.connect_for_each_screen(function(screen)
     }
 end)
 -- }}}
+
+-- Rules
+awful.rules.rules = {
+    {
+        rule = { },
+        properties = {
+            border_width = beautiful.border_width,
+            border_color = beautiful.border_normal,
+            focus = awful.client.focus.filter,
+            raise = true,
+            keys = config.client_keybinds,
+            buttons = config.client_buttons,
+            screen = awful.screen.preferred,
+            placement = awful.placement.no_overlap+awful.placement.no_offscreen
+        },
+    },
+}
+
+-- Enable sloppy focus
+client.connect_signal("mouse::enter", function(c)
+    c:emit_signal("request::activate", "mouse_enter", {raise = false})
+end)
+
+-- Set client borders
+client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
+client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
