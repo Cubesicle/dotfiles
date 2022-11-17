@@ -1,0 +1,13 @@
+{
+    "_comment": "This is the config for the sumneko lua language server.",
+    "Lua.workspace.checkThirdParty": false,
+    "diagnostics.globals": [
+        "awesome",
+        "client",
+        "screen",
+        "lfs"
+    ],
+    "workspace.library": [
+        "${3rd}/lfs/library",
+    ],
+}
