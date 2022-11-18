@@ -25,28 +25,31 @@ local debug_print = function(message)
     })
 end
 
--- TODO: fix this shit
 local sort_screens = function()
-    local screens = 0 -- The number of screens
+    -- Count number of screens
+    local screens = screen:count()
 
-    local sorted_screens = { } -- An array of screen indexes sorted by x position
+    -- Make a table of screen indexes sorted by screen x position
+    local sorted_screens = { }
     for s in screen do
-        screens = screens + 1 -- Increase the screen variable every time it finds a screen
-        table.insert(sorted_screens, { index = s.index, x = s.geometry.x }) -- Fill up the sorted_screens table
+        table.insert(sorted_screens, { index = s.index, x = s.geometry.x })
     end
-    table.sort(sorted_screens, function(a, b) return a.x < b.x end) -- Sort the screens by x position
+    table.sort(sorted_screens, function(a, b) return a.x < b.x end)
 
+    -- Add as many fake screens as there are real screens
     for _ = 1, screens, 1 do
-        screen.fake_add(0, 0, 0, 0) -- Add as many fake screens as there are real screens (value of screens will double)
+        screen.fake_add(0, 0, 0, 0)
     end
-    for i = 1, screens, 1 do
-        screen[i]:swap(screen[sorted_screens[i].index + screens]) -- Swap out the fake screens with real screens using the indexes in the sorted_screens table
-        debug_print(i .. "->" .. sorted_screens[i].index)
+
+    -- Reorder the screens using the sorted_screens table
+    for k, v in pairs(sorted_screens) do
+        screen[v.index]:swap(screen[k + screens])
     end
+
+    -- Remove the fake screens
     for _ = 1, screens, 1 do
-        screen[1]:fake_remove() -- Remove the fake screens
+        screen[1]:fake_remove()
     end
-    debug_print(gears.debug.dump_return(sorted_screens))
 end
 
 -- Error handling
@@ -84,7 +87,7 @@ awful.layout.layouts = config.layouts
 root.keys(config.keybinds)
 
 -- Sort screens
--- sort_screens()
+sort_screens()
 
 -- {{{ User Interface
 -- Display widgets on all screens
@@ -135,12 +138,6 @@ awful.screen.connect_for_each_screen(function(s)
             layout = wibox.layout.fixed.horizontal,
             s.taglist,
             s.layoutbox,
-            wibox.widget{
-                markup = " Screen #" .. s.index .. " x: " .. s.geometry.x .. " y: " .. s.geometry.y,
-                align  = "center",
-                valign = "center",
-                widget = wibox.widget.textbox,
-            },
         },
 
         -- Middle widget
