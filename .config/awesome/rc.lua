@@ -110,6 +110,7 @@ awful.screen.connect_for_each_screen(function(s)
         awful.button({ }, 1, function() awful.layout.inc( 1) end),
         awful.button({ }, 3, function() awful.layout.inc(-1) end)
     ))
+
     -- Create a tasklist widget
     s.tasklist = awful.widget.tasklist {
         screen  = s,
@@ -126,6 +127,25 @@ awful.screen.connect_for_each_screen(function(s)
         )
     }
 
+    -- Status widgets
+    s.test = wibox.widget {
+        markup = "jsdflkajsdf",
+        widget = wibox.widget.textbox,
+    }
+
+    -- Separators
+    s.space_separator = wibox.widget {
+        forced_width = 3,
+    }
+
+    s.pipe_separator = wibox.widget {
+        orientation = "vertical",
+        thickness = 1,
+        span_ratio = 0.5,
+        forced_width = 7,
+        widget = wibox.widget.separator,
+    }
+
     -- Create the bar
     s.bar = awful.wibar({ position = "top", screen = s })
 
@@ -137,7 +157,9 @@ awful.screen.connect_for_each_screen(function(s)
         {
             layout = wibox.layout.fixed.horizontal,
             s.taglist,
+            s.space_separator,
             s.layoutbox,
+            s.space_separator,
         },
 
         -- Middle widget
@@ -146,7 +168,11 @@ awful.screen.connect_for_each_screen(function(s)
         -- Right widgets
         {
             layout = wibox.layout.fixed.horizontal,
-            wibox.widget.textclock("%b %d, %Y %l:%M %p"),
+            s.space_separator,
+            s.test,
+            s.pipe_separator,
+            wibox.widget.textclock("%b %d, %Y%l:%M %p"),
+            s.space_separator,
             wibox.widget.systray(),
         },
     }
