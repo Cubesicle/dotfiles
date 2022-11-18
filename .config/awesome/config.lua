@@ -13,22 +13,10 @@ local tags = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 
 -- Layouts
 local layouts = {
-    awful.layout.suit.tile,
-    awful.layout.suit.tile.left,
-    awful.layout.suit.tile.bottom,
-    awful.layout.suit.tile.top,
     awful.layout.suit.fair,
-    awful.layout.suit.fair.horizontal,
-    awful.layout.suit.spiral,
-    awful.layout.suit.spiral.dwindle,
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
-    awful.layout.suit.magnifier,
-    awful.layout.suit.corner.nw,
     awful.layout.suit.floating,
-    -- awful.layout.suit.corner.ne,
-    -- awful.layout.suit.corner.sw,
-    -- awful.layout.suit.corner.se,
 }
 
 -- {{{ Keybinds
@@ -48,14 +36,21 @@ local keybinds = gears.table.join(
         { modkey }, "k", function() awful.client.focus.byidx(-1) end,
         { description = "focus previous client by index", group = "screen" }
     ),
-    -- TODO: focus other monitor relative to index
     awful.key(
-        { modkey }, "h", function() awful.screen.focus_bydirection("left") end,
-        { description = "focus the screen to the left", group = "screen" }
+        { modkey }, "h", function() awful.screen.focus_relative(-1) end,
+        { description = "focus the previous screen", group = "screen" }
     ),
     awful.key(
-        { modkey }, "l", function() awful.screen.focus_bydirection("right") end,
-        { description = "focus the screen to the right", group = "screen" }
+        { modkey }, "l", function() awful.screen.focus_relative(1) end,
+        { description = "focus the next screen", group = "screen" }
+    ),
+    awful.key(
+        { modkey }, "Tab", function() awful.layout.inc(1) end,
+        { description = "switch to next layout", group = "layout" }
+    ),
+    awful.key(
+        { modkey, "Shift" }, "Tab", function() awful.layout.inc(-1) end,
+        { description = "switch to previous layout", group = "layout" }
     ),
     awful.key(
         { modkey, "Control" }, "r", awesome.restart,
@@ -95,20 +90,38 @@ local client_keybinds = gears.table.join(
         { modkey, "Shift" }, "k", function() awful.client.swap.byidx(-1) end,
         { description = "swap with previous client by index", group = "client" }
     ),
-    -- TODO: send client to other monitor relative to index
     awful.key(
-        { modkey, "Shift" }, "h", function(c) awful.client.movetoscreen(c, c.screen:get_next_in_direction("left")) end,
-        { description = "send client to screen to the left", group = "client" }
+        { modkey, "Shift" }, "h", function(c) c:move_to_screen(c.screen.index - 1) end,
+        { description = "send client to previous screen", group = "client" }
     ),
     awful.key(
-        { modkey, "Shift" }, "l", function(c) awful.client.movetoscreen(c, c.screen:get_next_in_direction("right")) end,
-        { description = "send client to screen to the right", group = "client" }
+        { modkey, "Shift" }, "l", function(c) c:move_to_screen(c.screen.index + 1) end,
+        { description = "send client to next screen", group = "client" }
     ),
     awful.key(
         { modkey }, "w", function(c) c:kill() end,
         { description = "close", group = "client" }
     )
 )
+
+-- Add a keybind to send the focused client to the corresponding tag.
+for i = 1, 9 do
+    client_keybinds = gears.table.join(
+        client_keybinds,
+
+        -- Send client to tag.
+        awful.key(
+            { modkey, "Shift" }, "#" .. i + 9, function(c)
+                local screen = awful.screen.focused()
+                local tag = screen.tags[i]
+                if tag then
+                    c:move_to_tag (tag)
+                end
+            end,
+            {description = "move client to tag #" .. i, group = "tag"}
+        )
+    )
+end
 
 local client_buttons = gears.table.join(
     awful.button({ }, 1, function (c)

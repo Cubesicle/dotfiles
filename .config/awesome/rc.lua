@@ -101,6 +101,12 @@ awful.screen.connect_for_each_screen(function(s)
         )
     }
 
+    -- Create a layout box widget
+    s.layoutbox = awful.widget.layoutbox(s)
+    s.layoutbox:buttons(gears.table.join(
+        awful.button({ }, 1, function() awful.layout.inc( 1) end),
+        awful.button({ }, 3, function() awful.layout.inc(-1) end)
+    ))
     -- Create a tasklist widget
     s.tasklist = awful.widget.tasklist {
         screen  = s,
@@ -128,7 +134,7 @@ awful.screen.connect_for_each_screen(function(s)
         {
             layout = wibox.layout.fixed.horizontal,
             s.taglist,
-            --s.mylayoutbox,
+            s.layoutbox,
             wibox.widget{
                 markup = " Screen #" .. s.index .. " x: " .. s.geometry.x .. " y: " .. s.geometry.y,
                 align  = "center",
