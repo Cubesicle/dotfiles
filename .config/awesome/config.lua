@@ -175,7 +175,7 @@ local keybinds = gears.table.join(
     awful.key(
         { }, "XF86MonBrightnessUp",
         function()
-            os.execute("light -A 20")
+            os.execute("light -A 10")
             brightness_timer:emit_signal("timeout")
         end,
         { description = "raise the brightness", group = "other" }
@@ -183,7 +183,7 @@ local keybinds = gears.table.join(
     awful.key(
         { }, "XF86MonBrightnessDown",
         function()
-            os.execute("light -U 20")
+            os.execute("light -U 10")
             brightness_timer:emit_signal("timeout")
         end,
         { description = "lower the brightness", group = "other" }
