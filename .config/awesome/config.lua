@@ -38,8 +38,11 @@ local separators = {
 local volume, volume_timer = awful.widget.watch(
     "sh -c 'pactl get-sink-volume @DEFAULT_SINK@ | cut -s -d/ -f2,4; pactl get-sink-mute @DEFAULT_SINK@'",
     5, -- timeout 
-    function(widget, stdout)
+    function(widget, stdout, stderr)
         local label = "Volume: "
+
+        if stderr ~= "" then widget:set_markup(label .. "N/A"); return end
+
         local volumes = { }
         for v in stdout:gmatch("(%d+%%)") do table.insert(volumes, v) end
         local mute = string.match(stdout, "Mute: (%S+)") or "N/A"
