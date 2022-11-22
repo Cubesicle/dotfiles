@@ -93,6 +93,7 @@ local main_menu = awful.menu({
     items = {
         { "awesome", awesome_menu, beautiful.awesome_icon },
         { "open terminal", config.terminal },
+        { "rofi launcher", "sh -c 'sleep 0.15; rofi -show drun'" },
     },
 })
 

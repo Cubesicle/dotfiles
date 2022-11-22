@@ -112,6 +112,10 @@ local keybinds = gears.table.join(
         { modkey }, "Return", function() awful.spawn(terminal) end,
         { description = "spawn a terminal", group = "launcher" }
     ),
+    awful.key(
+        { modkey }, "m", function() os.execute("rofi -show drun") end,
+        { description = "run the rofi launcher", group = "launcher" }
+    ),
 
     -- Screen keybinds
     awful.key(
