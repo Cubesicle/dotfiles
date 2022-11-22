@@ -9,7 +9,7 @@ local editor = os.getenv("EDITOR") or "nano"
 local modkey = "Mod4"
 local altkey = "Mod1"
 
-local battery_dir = "/sys/class/power_supply/BAT1/" -- Trailing slash is required.
+local battery_dir = "/sys/class/power_supply/BAT1"
 
 -- Tags
 local tags = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
@@ -38,7 +38,7 @@ local separators = {
 }
 
 local battery = awful.widget.watch(
-    "sh -c 'cat " .. battery_dir .. "capacity; cat " .. battery_dir .. "status'",
+    "sh -c 'cat " .. battery_dir .. "/capacity; cat " .. battery_dir .. "/status'",
     5,
     function(widget, stdout, stderr)
         local label = "Battery: "
