@@ -18,13 +18,6 @@ require("awful.hotkeys_popup.keys")
 local config = require("config");
 
 -- Functions
-local debug_print = function(message)
-    naughty.notify({
-        title = "Debug",
-        text = tostring(message),
-    })
-end
-
 local sort_screens = function()
     -- Count number of screens
     local screens = screen:count()
