@@ -9,6 +9,8 @@ local editor = os.getenv("EDITOR") or "nano"
 local modkey = "Mod4"
 local altkey = "Mod1"
 
+local battery_dir = "/sys/class/power_supply/BAT1/" -- Trailing slash is required.
+
 -- Tags
 local tags = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 
@@ -35,6 +37,36 @@ local separators = {
     },
 }
 
+local battery = awful.widget.watch(
+    "sh -c 'cat " .. battery_dir .. "capacity; cat " .. battery_dir .. "status'",
+    5,
+    function(widget, stdout, stderr)
+        local label = "Battery: "
+
+        if stderr ~= "" then widget:set_markup(label .. "N/A"); return end
+
+        local stdout_lines = { }
+        for v in string.gmatch(stdout, "[^\n]+") do table.insert(stdout_lines, v) end
+
+        widget:set_markup(label .. stdout_lines[1] .. "% " .. stdout_lines[2])
+    end
+)
+
+local brightness, brightness_timer = awful.widget.watch(
+    "sh -c 'light -G'",
+    5,
+    function(widget, stdout, stderr)
+        local label = "Brightness: "
+
+        if stderr ~= "" then widget:set_markup(label .. "N/A"); return end
+
+        local stdout_lines = { }
+        for v in string.gmatch(stdout, "[^\n]+") do table.insert(stdout_lines, v) end
+
+        widget:set_markup(label .. stdout_lines[1] .. "%")
+    end
+)
+
 local volume, volume_timer = awful.widget.watch(
     "sh -c 'pactl get-sink-volume @DEFAULT_SINK@ | cut -s -d/ -f2,4; pactl get-sink-mute @DEFAULT_SINK@'",
     5, -- timeout 
@@ -45,7 +77,7 @@ local volume, volume_timer = awful.widget.watch(
 
         local volumes = { }
         for v in stdout:gmatch("(%d+%%)") do table.insert(volumes, v) end
-        local mute = string.match(stdout, "Mute: (%S+)") or "N/A"
+        local mute = string.match(stdout, "Mute: (%S+)")
 
         -- customize here
         if mute == "yes" then
@@ -63,6 +95,10 @@ local date = wibox.widget.textclock("%a, %b %d, %Y %-l:%M %p")
 local status_bar = {
     layout = wibox.layout.fixed.horizontal,
     separators.space,
+    battery,
+    separators.pipe,
+    brightness,
+    separators.pipe,
     volume,
     separators.pipe,
     date,
@@ -134,7 +170,23 @@ local keybinds = gears.table.join(
             os.execute("pactl -- set-sink-mute @DEFAULT_SINK@ toggle")
             volume_timer:emit_signal("timeout")
         end,
-        { description = "lower the volume", group = "other" }
+        { description = "toggle mute volume", group = "other" }
+    ),
+    awful.key(
+        { }, "XF86MonBrightnessUp",
+        function()
+            os.execute("light -A 20")
+            brightness_timer:emit_signal("timeout")
+        end,
+        { description = "raise the brightness", group = "other" }
+    ),
+    awful.key(
+        { }, "XF86MonBrightnessDown",
+        function()
+            os.execute("light -U 20")
+            brightness_timer:emit_signal("timeout")
+        end,
+        { description = "lower the brightness", group = "other" }
     )
 );
 
