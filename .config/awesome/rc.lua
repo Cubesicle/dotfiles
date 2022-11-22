@@ -28,7 +28,6 @@ end
 local sort_screens = function()
     -- Count number of screens
     local screens = screen:count()
-
     -- Make a table of screen indexes sorted by screen x position
     local sorted_screens = { }
     for s in screen do
@@ -90,8 +89,42 @@ root.keys(config.keybinds)
 sort_screens()
 
 -- {{{ User Interface
+-- Menu
+local awesome_menu = {
+    { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
+    { "manual", config.terminal .. " -e man awesome" },
+    { "restart", awesome.restart },
+    { "quit", function() awesome.quit() end }
+}
+
+local main_menu = awful.menu({
+    items = {
+        { "awesome", awesome_menu, beautiful.awesome_icon },
+        { "open terminal", config.terminal },
+    },
+})
+
+-- Launcher
+local launcher = awful.widget.launcher({
+    image = beautiful.awesome_icon, menu = main_menu
+})
+
+-- Expandable systray
+local systray = wibox.widget.systray()
+
+local systray_container = wibox.widget {
+    {
+        systray,
+        config.separators.space,
+        layout = wibox.layout.fixed.horizontal,
+    },
+    visible = false,
+    widget = wibox.container.background,
+}
+
 -- Display widgets on all screens
 awful.screen.connect_for_each_screen(function(s)
+    -- {{{ Screen-specific widgets
     -- Set tag table for each screen
     awful.tag(config.tags, s, awful.layout.layouts[1])
 
@@ -127,24 +160,18 @@ awful.screen.connect_for_each_screen(function(s)
         )
     }
 
-    -- Status widgets
-    s.test = wibox.widget {
-        markup = "jsdflkajsdf",
-        widget = wibox.widget.textbox,
+    -- Layout box + expandable systray
+    s.systray_show_area = wibox.widget {
+        {
+            systray_container,
+            s.layoutbox,
+            layout = wibox.layout.fixed.horizontal,
+        },
+        widget = wibox.container.background,
     }
 
-    -- Separators
-    s.space_separator = wibox.widget {
-        forced_width = 3,
-    }
-
-    s.pipe_separator = wibox.widget {
-        orientation = "vertical",
-        thickness = 1,
-        span_ratio = 0.5,
-        forced_width = 7,
-        widget = wibox.widget.separator,
-    }
+    s.systray_show_area:connect_signal("mouse::enter", function() systray:set_screen(mouse.screen) systray_container.visible = true end)
+    s.systray_show_area:connect_signal("mouse::leave", function() systray_container.visible = false end)
 
     -- Create the bar
     s.bar = awful.wibar({ position = "top", screen = s })
@@ -156,10 +183,8 @@ awful.screen.connect_for_each_screen(function(s)
         -- Left widgets
         {
             layout = wibox.layout.fixed.horizontal,
+            launcher,
             s.taglist,
-            s.space_separator,
-            s.layoutbox,
-            s.space_separator,
         },
 
         -- Middle widget
@@ -168,18 +193,18 @@ awful.screen.connect_for_each_screen(function(s)
         -- Right widgets
         {
             layout = wibox.layout.fixed.horizontal,
-            s.space_separator,
-            s.test,
-            s.pipe_separator,
-            wibox.widget.textclock("%b %d, %Y%l:%M %p"),
-            s.space_separator,
-            wibox.widget.systray(),
+            wibox.widget {
+                config.status_bar,
+                widget = wibox.container.background,
+            },
+            s.systray_show_area,
         },
     }
+    -- }}}
 end)
 -- }}}
 
--- Rules
+-- Rulesvolume_now.level
 awful.rules.rules = {
     {
         rule = { },
@@ -196,6 +221,7 @@ awful.rules.rules = {
     },
 }
 
+-- {{{ Event handlers
 -- Enable sloppy focus
 client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", {raise = false})
@@ -204,3 +230,4 @@ end)
 -- Set client borders
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
+-- }}}

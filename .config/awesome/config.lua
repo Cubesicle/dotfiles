@@ -1,6 +1,7 @@
 -- Imports
 local awful = require("awful")
 local gears = require("gears")
+local wibox = require("wibox")
 
 -- Stuff
 local terminal = "alacritty"
@@ -17,6 +18,52 @@ local layouts = {
     awful.layout.suit.max,
     awful.layout.suit.max.fullscreen,
     awful.layout.suit.floating,
+}
+
+-- Widgets & status bar
+local separators = {
+    space = wibox.widget {
+        forced_width = 3,
+    },
+
+    pipe = wibox.widget {
+        orientation = "vertical",
+        thickness = 1,
+        span_ratio = 0.5,
+        forced_width = 7,
+        widget = wibox.widget.separator,
+    },
+}
+
+local volume, volume_timer = awful.widget.watch(
+    "sh -c 'pactl get-sink-volume @DEFAULT_SINK@ | cut -s -d/ -f2,4; pactl get-sink-mute @DEFAULT_SINK@'",
+    5, -- timeout 
+    function(widget, stdout)
+        local label = "Volume: "
+        local volumes = { }
+        for v in stdout:gmatch("(%d+%%)") do table.insert(volumes, v) end
+        local mute = string.match(stdout, "Mute: (%S+)") or "N/A"
+
+        -- customize here
+        if mute == "yes" then
+            widget:set_markup(label .. "muted")
+        elseif volumes[1] == volumes[2] then
+            widget:set_markup(label .. volumes[1])
+        else
+            widget:set_markup(label .. volumes[1] .. " / " .. volumes[2])
+        end
+    end
+)
+
+local date = wibox.widget.textclock("%a, %b %d, %Y %-l:%M %p")
+
+local status_bar = {
+    layout = wibox.layout.fixed.horizontal,
+    separators.space,
+    volume,
+    separators.pipe,
+    date,
+    separators.space,
 }
 
 -- {{{ Keybinds
@@ -59,6 +106,32 @@ local keybinds = gears.table.join(
     awful.key(
         { modkey, "Control" }, "q", awesome.quit,
         { description = "quit awesome", group = "screen" }
+    ),
+
+    -- Other
+    awful.key(
+        { }, "XF86AudioRaiseVolume",
+        function()
+            os.execute("pactl -- set-sink-volume @DEFAULT_SINK@ +5%")
+            volume_timer:emit_signal("timeout")
+        end,
+        { description = "raise the volume", group = "other" }
+    ),
+    awful.key(
+        { }, "XF86AudioLowerVolume",
+        function()
+            os.execute("pactl -- set-sink-volume @DEFAULT_SINK@ -5%")
+            volume_timer:emit_signal("timeout")
+        end,
+        { description = "lower the volume", group = "other" }
+    ),
+    awful.key(
+        { }, "XF86AudioMute",
+        function()
+            os.execute("pactl -- set-sink-mute @DEFAULT_SINK@ toggle")
+            volume_timer:emit_signal("timeout")
+        end,
+        { description = "lower the volume", group = "other" }
     )
 );
 
@@ -150,6 +223,8 @@ return {
     altkey = altkey,
     tags = tags,
     layouts = layouts,
+    status_bar = status_bar,
+    separators = separators,
     keybinds = keybinds,
     client_keybinds = client_keybinds,
     client_buttons = client_buttons,
