@@ -1,6 +1,9 @@
 -- Additional Plugins
 lvim.plugins = {
     {
+        "catppuccin/nvim",
+    },
+    {
         "ggandor/leap.nvim",
         requires = { "tpope/vim-repeat" },
         config = function()
@@ -54,3 +57,6 @@ vim.opt.spell = false
 vim.opt.spelllang = "en"
 vim.opt.scrolloff = 8 -- is one of my fav
 vim.opt.sidescrolloff = 8
+
+-- Colorscheme
+lvim.colorscheme = "catppuccin-mocha"
