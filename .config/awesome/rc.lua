@@ -204,7 +204,7 @@ awful.screen.connect_for_each_screen(function(s)
 end)
 -- }}}
 
--- Rulesvolume_now.level
+-- Rules
 awful.rules.rules = {
     {
         rule = { },
