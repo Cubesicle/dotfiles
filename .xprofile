@@ -9,7 +9,7 @@ setxkbmap -option caps:escape
 gentoo-pipewire-launcher &
 
 # other programs
-picom &
+picom --experimental-backends &
 nm-applet &
 udiskie &
 
