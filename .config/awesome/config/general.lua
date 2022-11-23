@@ -18,7 +18,6 @@ general.tags = { "1", "2", "3", "4", "5", "6", "7", "8", "9" }
 general.layouts = {
     awful.layout.suit.fair,
     awful.layout.suit.max,
-    awful.layout.suit.max.fullscreen,
     awful.layout.suit.floating,
 }
 
