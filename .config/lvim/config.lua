@@ -10,7 +10,13 @@ lvim.plugins = {
             require('leap').add_default_mappings()
         end,
     },
-    { "mattn/emmet-vim" },
+    { "norcalli/nvim-colorizer.lua" },
+    {
+        "ggandor/leap.nvim",
+        setup = function()
+            require'colorizer'.setup()
+        end,
+    },
 }
 
 -- Other stuff
