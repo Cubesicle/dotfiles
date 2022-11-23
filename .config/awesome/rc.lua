@@ -1,23 +1,21 @@
 -- Imports
 pcall(require, "luarocks.loader")
 
-local gears = require("gears")
 local awful = require("awful")
-require("awful.autofocus")
-
-local wibox = require("wibox")
-
+local gears = require("gears")
+local naughty = require("naughty")
 local beautiful = require("beautiful")
 
-local naughty = require("naughty")
-local hotkeys_popup = require("awful.hotkeys_popup")
-
+require("awful.autofocus")
 require("awful.hotkeys_popup.keys")
 
-local config = require("config");
+local config = require("config")
+
+-- Set theme
+beautiful.init(gears.filesystem.get_configuration_dir() .. "/themes/" .. config.general.theme)
 
 -- Functions
-local sort_screens = function()
+local function sort_screens()
     -- Count number of screens
     local screens = screen:count()
     -- Make a table of screen indexes sorted by screen x position
@@ -40,6 +38,18 @@ local sort_screens = function()
     -- Remove the fake screens
     for _ = 1, screens, 1 do
         screen[1]:fake_remove()
+    end
+end
+
+local function set_wallpaper(s)
+    -- Wallpaper
+    if beautiful.wallpaper then
+        local wallpaper = beautiful.wallpaper
+        -- If wallpaper is a function, call it with the screen
+        if type(wallpaper) == "function" then
+            wallpaper = wallpaper(s)
+        end
+        gears.wallpaper.maximized(wallpaper, s, true)
     end
 end
 
@@ -68,134 +78,29 @@ do
     end)
 end
 
--- Set theme 
-beautiful.init(gears.filesystem.get_themes_dir() .. "default/theme.lua")
-
 -- Set Layouts
-awful.layout.layouts = config.layouts
+awful.layout.layouts = config.general.layouts
 
 -- Set keys
-root.keys(config.keybinds)
+root.keys(config.keybinds.global)
 
 -- Sort screens
 sort_screens()
 
--- {{{ User Interface
--- Menu
-local awesome_menu = {
-    { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
-    { "manual", config.terminal .. " -e man awesome" },
-    { "restart", awesome.restart },
-    { "quit", function() awesome.quit() end }
-}
-
-local main_menu = awful.menu({
-    items = {
-        { "awesome", awesome_menu, beautiful.awesome_icon },
-        { "open terminal", config.terminal },
-        { "rofi launcher", "sh -c 'sleep 0.15; rofi -show drun'" },
-    },
-})
-
--- Launcher
-local launcher = awful.widget.launcher({
-    image = beautiful.awesome_icon, menu = main_menu
-})
-
--- Expandable systray
-local systray = wibox.widget.systray()
-
-local systray_container = wibox.widget {
-    {
-        systray,
-        config.separators.space,
-        layout = wibox.layout.fixed.horizontal,
-    },
-    visible = false,
-    widget = wibox.container.background,
-}
-
 -- Display widgets on all screens
 awful.screen.connect_for_each_screen(function(s)
-    -- {{{ Screen-specific widgets
+    -- Set the wallpaper
+    set_wallpaper(s)
+
     -- Set tag table for each screen
-    awful.tag(config.tags, s, awful.layout.layouts[1])
-
-    -- Create a taglist widget
-    s.taglist = awful.widget.taglist {
-        screen  = s,
-        filter  = awful.widget.taglist.filter.all,
-        buttons = gears.table.join(
-            awful.button({ }, 1, function(tag) tag:view_only() end)
-        )
-    }
-
-    -- Create a layout box widget
-    s.layoutbox = awful.widget.layoutbox(s)
-    s.layoutbox:buttons(gears.table.join(
-        awful.button({ }, 1, function() awful.layout.inc( 1) end),
-        awful.button({ }, 3, function() awful.layout.inc(-1) end)
-    ))
-
-    -- Create a tasklist widget
-    s.tasklist = awful.widget.tasklist {
-        screen  = s,
-        filter  = awful.widget.tasklist.filter.currenttags,
-        buttons = gears.table.join(
-            awful.button({ }, 1, function(c)
-                c:emit_signal(
-                    "request::activate",
-                    "tasklist",
-                    { raise = true }
-                )
-            end),
-            awful.button({ }, 2, function(c) c:kill() end)
-        )
-    }
-
-    -- Layout box + expandable systray
-    s.systray_show_area = wibox.widget {
-        {
-            systray_container,
-            s.layoutbox,
-            layout = wibox.layout.fixed.horizontal,
-        },
-        widget = wibox.container.background,
-    }
-
-    s.systray_show_area:connect_signal("mouse::enter", function() systray:set_screen(mouse.screen) systray_container.visible = true end)
-    s.systray_show_area:connect_signal("mouse::leave", function() systray_container.visible = false end)
+    awful.tag(config.general.tags, s, awful.layout.layouts[1])
 
     -- Create the bar
     s.bar = awful.wibar({ position = "top", screen = s })
 
-    -- Add widgets to the wibox
-    s.bar:setup {
-        layout = wibox.layout.align.horizontal,
-
-        -- Left widgets
-        {
-            layout = wibox.layout.fixed.horizontal,
-            launcher,
-            s.taglist,
-        },
-
-        -- Middle widget
-        s.tasklist,
-
-        -- Right widgets
-        {
-            layout = wibox.layout.fixed.horizontal,
-            wibox.widget {
-                config.status_bar,
-                widget = wibox.container.background,
-            },
-            s.systray_show_area,
-        },
-    }
-    -- }}}
+    -- Add widgets to the bar
+    config.widgets.setup_bar(s.bar)
 end)
--- }}}
 
 -- Rules
 awful.rules.rules = {
@@ -206,15 +111,14 @@ awful.rules.rules = {
             border_color = beautiful.border_normal,
             focus = awful.client.focus.filter,
             raise = true,
-            keys = config.client_keybinds,
-            buttons = config.client_buttons,
+            keys = config.keybinds.client,
+            buttons = config.keybinds.client_buttons,
             screen = awful.screen.preferred,
             placement = awful.placement.no_overlap+awful.placement.no_offscreen
         },
     },
 }
 
--- {{{ Event handlers
 -- Enable sloppy focus
 client.connect_signal("mouse::enter", function(c)
     c:emit_signal("request::activate", "mouse_enter", {raise = false})
@@ -223,4 +127,3 @@ end)
 -- Set client borders
 client.connect_signal("focus", function(c) c.border_color = beautiful.border_focus end)
 client.connect_signal("unfocus", function(c) c.border_color = beautiful.border_normal end)
--- }}}
