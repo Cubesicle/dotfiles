@@ -78,19 +78,16 @@ root.keys(config.keybinds.global)
 -- Sort screens
 sort_screens()
 
+-- Set the wallpaper
+os.execute("nitrogen --restore")
+
 -- Display widgets on all screens
 awful.screen.connect_for_each_screen(function(s)
-    -- Set the wallpaper
-    os.execute("nitrogen --restore")
-
     -- Set tag table for each screen
     awful.tag(config.general.tags, s, awful.layout.layouts[1])
 
-    -- Create the bar
-    s.bar = awful.wibar({ position = "top", screen = s })
-
-    -- Add widgets to the bar
-    config.widgets.setup_bar(s.bar)
+    -- Add a bar for each screen
+    config.widgets.bar(s)
 end)
 
 -- Rules

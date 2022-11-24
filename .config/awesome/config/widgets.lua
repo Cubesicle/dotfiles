@@ -32,49 +32,24 @@ local main_menu = awful.menu({
 })
 
 -- Bar widgets
-local function wrap_in_container(widget, fg_color, bg_color, shape)
+local function wrap_in_powerline(widget, fg_color, bg_color, is_end)
+    local shape = gears.shape.rectangular_tag
+    if is_end then
+        shape = function(cr, width, height) gears.shape.powerline(cr, width, height, height/-2) end
+    end
     return wibox.widget {
-        {
+        wibox.widget {
             widget,
-            layout = wibox.layout.fixed.horizontal,
+            left = dpi(general.bar_height/2 + general.widget_spacing),
+            right = dpi(general.bar_height/2 + general.widget_spacing),
+            widget = wibox.container.margin,
         },
         fg = fg_color,
         bg = bg_color,
-        shape = shape or gears.shape.rectangle,
+        shape = shape,
         widget = wibox.container.background,
     }
 end
-
-widgets.separators = {
-    space = function(bg_color)
-        if not bg_color then
-            return wibox.widget {
-                forced_width = dpi(7),
-            }
-        else
-            return wibox.widget {
-                {
-                    forced_width = dpi(7),
-                    layout = wibox.layout.fixed.horizontal,
-                },
-                bg = bg_color,
-                widget = wibox.container.background,
-            }
-        end
-    end,
-
-    powerline = function(fg_color, bg_color)
-        return wrap_in_container(
-            wibox.widget {
-                shape = gears.shape.rectangular_tag,
-                forced_width = dpi(12),
-                widget = wibox.widget.separator,
-            },
-            fg_color,
-            bg_color
-        )
-    end,
-}
 
 local launcher = awful.widget.launcher({
     image = beautiful.awesome_icon, menu = main_menu
@@ -152,6 +127,37 @@ local function new_tasklist(s)
     return awful.widget.tasklist {
         screen  = s,
         filter  = awful.widget.tasklist.filter.currenttags,
+        style   = {
+            shape = function(cr, width, height) gears.shape.powerline(cr, width, height, height/-2) end,
+        },
+        layout   = {
+            spacing = dpi(general.bar_height/-2),
+            layout  = wibox.layout.flex.horizontal
+        },
+        widget_template = {
+            {
+                {
+                    {
+                        {
+                            id     = 'icon_role',
+                            widget = wibox.widget.imagebox,
+                        },
+                        margins = dpi(2),
+                        widget  = wibox.container.margin,
+                    },
+                    {
+                        id     = 'text_role',
+                        widget = wibox.widget.textbox,
+                    },
+                    layout = wibox.layout.fixed.horizontal,
+                },
+                left  = dpi(general.bar_height/2 + general.widget_spacing),
+                right = dpi(general.bar_height/2 + general.widget_spacing),
+                widget = wibox.container.margin
+            },
+            id     = 'background_role',
+            widget = wibox.container.background,
+        },
         buttons = gears.table.join(
             awful.button({ }, 1, function(c)
                 c:emit_signal(
@@ -177,20 +183,17 @@ local function new_systray_and_layoutbox(s)
     local systray_container = wibox.widget {
         {
             systray,
-            widgets.separators.space(),
-            layout = wibox.layout.fixed.horizontal,
+            right = dpi(general.widget_spacing),
+            widget = wibox.container.margin,
         },
         visible = false,
-        widget = wibox.container.background,
+        layout = wibox.layout.fixed.horizontal,
     }
 
     local systray_and_layoutbox = wibox.widget {
-        {
-            systray_container,
-            layoutbox,
-            layout = wibox.layout.fixed.horizontal,
-        },
-        widget = wibox.container.background,
+        systray_container,
+        layoutbox,
+        layout = wibox.layout.fixed.horizontal,
     }
 
     systray_and_layoutbox:connect_signal("mouse::enter", function() systray:set_screen(mouse.screen) systray_container.visible = true end)
@@ -199,61 +202,47 @@ local function new_systray_and_layoutbox(s)
     return systray_and_layoutbox
 end
 
-local status_bar = {
-    widgets.separators.space(),
-
-    widgets.separators.powerline("#f38ba8", beautiful.bg_normal),
-    widgets.separators.space("#f38ba8"),
-    wrap_in_container(battery, beautiful.fg_focus, "#f38ba8"),
-    widgets.separators.space("#f38ba8"),
-
-    widgets.separators.powerline("#eba0ac", "#f38ba8"),
-    widgets.separators.space("#eba0ac"),
-    wrap_in_container(brightness, beautiful.fg_focus, "#eba0ac"),
-    widgets.separators.space("#eba0ac"),
-
-    widgets.separators.powerline("#fab387", "#eba0ac"),
-    widgets.separators.space("#fab387"),
-    wrap_in_container(volume, beautiful.fg_focus, "#fab387"),
-    widgets.separators.space("#fab387"),
-
-    widgets.separators.powerline("#f9e2af", "#fab387"),
-    widgets.separators.space("#f9e2af"),
-    wrap_in_container(date, beautiful.fg_focus, "#f9e2af"),
-    widgets.separators.space("#f9e2af"),
-
-    widgets.separators.powerline(beautiful.bg_normal, "#f9e2af"),
-    widgets.separators.space(),
+local status_bar = wibox.widget {
+    wrap_in_powerline(battery, beautiful.fg_focus, "#f38ba8"),
+    wrap_in_powerline(brightness, beautiful.fg_focus, "#eba0ac"),
+    wrap_in_powerline(volume, beautiful.fg_focus, "#fab387"),
+    wrap_in_powerline(date, beautiful.fg_focus, "#f9e2af", true),
+    spacing = dpi(general.bar_height/-2),
     layout = wibox.layout.fixed.horizontal,
 }
 
-widgets.setup_bar = function(b)
-    local s = b.screen
-    b:setup {
-        layout = wibox.layout.align.horizontal,
-
-        -- Left widgets
+widgets.bar = function(s)
+    local bar = awful.wibar({
+        height = dpi(general.bar_height),
+        position = "top",
+        screen = s,
+    })
+    bar:setup {
         {
             launcher,
-            widgets.separators.space(),
-            new_taglist(s),
-            widgets.separators.space(),
+            {
+                new_taglist(s),
+                left = dpi(general.widget_spacing),
+                right = dpi(general.widget_spacing),
+                widget = wibox.container.margin,
+            },
             layout = wibox.layout.fixed.horizontal,
         },
-
-        -- Middle widget
-        new_tasklist(s),
-
-        -- Right widgets
+            new_tasklist(s),
         {
-            wibox.widget {
+            nil,
+            {
                 status_bar,
-                widget = wibox.container.background,
+                left = dpi(general.widget_spacing),
+                right = dpi(general.widget_spacing),
+                widget = wibox.container.margin,
             },
             new_systray_and_layoutbox(s),
-            layout = wibox.layout.fixed.horizontal,
+            layout = wibox.layout.align.horizontal,
         },
+        layout = wibox.layout.align.horizontal,
     }
+    return bar
 end
 
 return widgets
