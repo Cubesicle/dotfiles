@@ -78,6 +78,9 @@ do
     end)
 end
 
+-- Auto dpi
+awful.screen.set_auto_dpi_enabled(true)
+
 -- Set Layouts
 awful.layout.layouts = config.general.layouts
 
