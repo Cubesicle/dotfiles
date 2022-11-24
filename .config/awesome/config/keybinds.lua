@@ -93,6 +93,13 @@ keybinds.global = gears.table.join(
             widgets.timers.brightness_timer:emit_signal("timeout")
         end,
         { description = "lower the brightness", group = "other" }
+    ),
+    awful.key(
+        { modkey, "Shift" }, "s",
+        function()
+            os.execute("flameshot gui &")
+        end,
+        { description = "take a screenshot", group = "other" }
     )
 )
 
