@@ -2,6 +2,19 @@
 
 these are my dotfiles woah
 
+## Programs Used
+
+ - AwesomeWM
+ - Flameshot
+ - kitty
+ - LunarVim
+ - picom (jonaburg fork)
+ - rofi
+
+ - Status bar dependencies:
+     - Volume: PulseAudio or PipeWire
+     - Brightness: haikarainen/light
+
 ## Installation
 
 1. Set the "dots" alias:
