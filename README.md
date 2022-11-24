@@ -8,6 +8,7 @@ these are my dotfiles woah
  - Flameshot
  - kitty
  - LunarVim
+ - Nitrogen
  - picom (jonaburg fork)
  - rofi
 
