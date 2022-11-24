@@ -41,18 +41,6 @@ local function sort_screens()
     end
 end
 
-local function set_wallpaper(s)
-    -- Wallpaper
-    if beautiful.wallpaper then
-        local wallpaper = beautiful.wallpaper
-        -- If wallpaper is a function, call it with the screen
-        if type(wallpaper) == "function" then
-            wallpaper = wallpaper(s)
-        end
-        gears.wallpaper.maximized(wallpaper, s, true)
-    end
-end
-
 -- Error handling
 if awesome.startup_errors then
     naughty.notify({
@@ -93,7 +81,7 @@ sort_screens()
 -- Display widgets on all screens
 awful.screen.connect_for_each_screen(function(s)
     -- Set the wallpaper
-    set_wallpaper(s)
+    os.execute("nitrogen --restore")
 
     -- Set tag table for each screen
     awful.tag(config.general.tags, s, awful.layout.layouts[1])
