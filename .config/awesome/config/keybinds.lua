@@ -140,6 +140,16 @@ keybinds.client = gears.table.join(
         { description = "send client to next screen", group = "client" }
     ),
     awful.key(
+        { modkey }, "f", function(c)
+            if c.fullscreen then
+                c.fullscreen = false
+            else
+                c.fullscreen = true
+            end
+        end,
+        { description = "toggle fullscreen for the client", group = "client" }
+    ),
+    awful.key(
         { modkey }, "w", function(c) c:kill() end,
         { description = "close", group = "client" }
     )
