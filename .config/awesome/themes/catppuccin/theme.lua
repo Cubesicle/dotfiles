@@ -81,6 +81,13 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
     taglist_square_size, theme.fg_normal
 )
 
+-- Hotkey menu
+theme.hotkeys_bg = theme.colors.base
+theme.hotkeys_fg = theme.colors.text
+theme.hotkeys_modifiers_fg = theme.colors.subtext1
+theme.hotkeys_border_color = theme.colors.mauve
+theme.hotkeys_border_width = dpi(2)
+
 -- Variables set for theming notifications:
 -- notification_font
 -- notification_[bg|fg]
