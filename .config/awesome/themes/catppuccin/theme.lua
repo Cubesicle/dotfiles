@@ -12,24 +12,52 @@ local theme_path = gfs.get_configuration_dir() .. "/themes/catppuccin"
 
 local theme = { }
 
-theme.font          = "JetBrainsMono Nerd Font Bold 8"
+theme.font = "JetBrainsMono Nerd Font Bold 8"
 
-theme.bg_normal     = "#313244"
-theme.bg_focus      = "#cba6f7"
-theme.bg_urgent     = "#f38ba8"
-theme.bg_minimize   = "#181825"
+theme.colors = { }
+theme.colors.rosewater = "#f5e0dc"
+theme.colors.flamingo  = "#f2cdcd"
+theme.colors.pink      = "#f5c2e7"
+theme.colors.mauve     = "#cba6f7"
+theme.colors.red       = "#f38ba8"
+theme.colors.maroon    = "#eba0ac"
+theme.colors.peach     = "#fab387"
+theme.colors.yellow    = "#f9e2af"
+theme.colors.green     = "#a6e3a1"
+theme.colors.teal      = "#94e2d5"
+theme.colors.sky       = "#89dceb"
+theme.colors.sapphire  = "#74c7ec"
+theme.colors.blue      = "#89b4fa"
+theme.colors.lavender  = "#b4befe"
+theme.colors.text      = "#cdd6f4"
+theme.colors.subtext1  = "#bac2de"
+theme.colors.subtext0  = "#a6adc8"
+theme.colors.overlay2  = "#9399b2"
+theme.colors.overlay1  = "#7f849c"
+theme.colors.overlay0  = "#6c7086"
+theme.colors.surface2  = "#585b70"
+theme.colors.surface1  = "#45475a"
+theme.colors.surface0  = "#313244"
+theme.colors.base      = "#1e1e2e"
+theme.colors.mantle    = "#181825"
+theme.colors.crust     = "#11111b"
+
+theme.bg_normal     = theme.colors.surface0
+theme.bg_focus      = theme.colors.mauve
+theme.bg_urgent     = theme.colors.red
+theme.bg_minimize   = theme.colors.mantle
 theme.bg_systray    = theme.bg_normal
 
-theme.fg_normal     = "#cdd6f4"
-theme.fg_focus      = "#11111b"
-theme.fg_urgent     = "#11111b"
-theme.fg_minimize   = "#cdd6f4"
+theme.fg_normal     = theme.colors.text
+theme.fg_focus      = theme.colors.crust
+theme.fg_urgent     = theme.colors.crust
+theme.fg_minimize   = theme.colors.text
 
 theme.useless_gap   = dpi(2)
 theme.border_width  = dpi(2)
-theme.border_normal = "#313244"
-theme.border_focus  = "#cba6f7"
-theme.border_marked = "#eba0ac"
+theme.border_normal = theme.colors.surface0
+theme.border_focus  = theme.colors.mauve
+theme.border_marked = theme.colors.red
 
 -- There are other variable sets
 -- overriding the default one when
