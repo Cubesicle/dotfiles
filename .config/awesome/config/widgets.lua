@@ -203,10 +203,10 @@ local function new_systray_and_layoutbox(s)
 end
 
 local status_bar = wibox.widget {
-    wrap_in_powerline(battery, beautiful.fg_focus, "#f38ba8"),
-    wrap_in_powerline(brightness, beautiful.fg_focus, "#eba0ac"),
-    wrap_in_powerline(volume, beautiful.fg_focus, "#fab387"),
-    wrap_in_powerline(date, beautiful.fg_focus, "#f9e2af", true),
+    wrap_in_powerline(battery,    beautiful.fg_focus, beautiful.colors.red),
+    wrap_in_powerline(brightness, beautiful.fg_focus, beautiful.colors.maroon),
+    wrap_in_powerline(volume,     beautiful.fg_focus, beautiful.colors.peach),
+    wrap_in_powerline(date,       beautiful.fg_focus, beautiful.colors.yellow, true),
     spacing = dpi(general.bar_height/-2),
     layout = wibox.layout.fixed.horizontal,
 }
