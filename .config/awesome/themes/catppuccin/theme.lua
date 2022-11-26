@@ -81,6 +81,12 @@ theme.taglist_squares_unsel = theme_assets.taglist_squares_unsel(
     taglist_square_size, theme.fg_normal
 )
 
+-- Notifications
+theme.notification_bg = theme.colors.base
+theme.notification_fg = theme.colors.text
+theme.notification_border_width = theme.border_width
+theme.notification_border_color = theme.border_focus
+
 -- Hotkey menu
 theme.hotkeys_bg = theme.colors.base
 theme.hotkeys_fg = theme.colors.text

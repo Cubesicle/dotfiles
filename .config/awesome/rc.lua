@@ -72,6 +72,9 @@ awful.layout.layouts = config.general.layouts
 -- Set keys
 root.keys(config.keybinds.global)
 
+-- Set notification border width (this is a workaround for a bug in the naughty library)
+naughty.config.defaults.border_width = beautiful.notification_border_width
+
 -- Sort screens
 sort_screens()
 
