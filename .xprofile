@@ -11,7 +11,7 @@ gentoo-pipewire-launcher &
 # other programs
 picom --experimental-backends &
 nm-applet &
-udiskie &
+udiskie -t &
 
 # launch awesome
 dbus-launch awesome
