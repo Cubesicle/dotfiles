@@ -2,6 +2,13 @@
 
 these are my dotfiles woah
 
+![](https://raw.githubusercontent.com/Cubesicle/dotfiles/main/Pictures/dotfiles-screenshot-1.png)
+![](https://raw.githubusercontent.com/Cubesicle/dotfiles/main/Pictures/dotfiles-screenshot-2.png)
+
+## Theme
+- Colorscheme: [Catppuccin](https://github.com/catppuccin/catppuccin) (Mocha)
+- Font: JetBrainsMono Nerd Font
+
 ## Programs Used
 
  - AwesomeWM
@@ -9,6 +16,8 @@ these are my dotfiles woah
  - kitty
  - LunarVim
  - Nitrogen
+ - Oh My Zsh
+ - pfetch
  - picom (jonaburg fork)
  - rofi
 
@@ -18,7 +27,7 @@ these are my dotfiles woah
 
 ## Installation
 
-1. Set the "dots" alias:
+1. Set the dots alias:
 ```bash
 alias dots="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 ```
@@ -38,6 +47,6 @@ dots checkout
 
 ## Managing the dotfiles
 
-The "dots" alias is just the "git" command but it uses the ".dotfiles" directory to store all the git files and stuff.
-For example, `dots pull` does the exact same thing as `git pull` but it uses the bare git directory called ".dotfiles" instead of the ".git" directory.
-Using `git pull` will not do anything since the ".git" directory doesn't exist so don't use it.
+The `dots` alias is just the `git` command but it uses the .dotfiles directory to store all the git files and stuff.
+For example, `dots pull` does the exact same thing as `git pull` but it uses the bare git directory called .dotfiles instead of the .git directory.
+Using `git pull` will not do anything since the .git directory doesn't exist so don't use it.
