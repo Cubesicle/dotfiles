@@ -78,8 +78,8 @@ naughty.config.defaults.border_width = beautiful.notification_border_width
 -- Sort screens
 sort_screens()
 
--- Set the wallpaper
-os.execute("nitrogen --restore")
+-- Launch startup script
+os.execute("sh -c '~/.autostart.sh'")
 
 -- Display widgets on all screens
 awful.screen.connect_for_each_screen(function(s)
