@@ -8,6 +8,7 @@ these are my dotfiles woah
 ## Theme
 - Colorscheme: [Catppuccin](https://github.com/catppuccin/catppuccin) (Mocha)
 - GTK Theme: [Catppuccin-Mocha-Mauve](https://github.com/catppuccin/gtk)
+- Icon Theme: [Papirus-Dark](https://github.com/PapirusDevelopmentTeam/papirus-icon-theme)
 - Cursors: [Catppuccin-Mocha-Dark-Cursors](https://github.com/catppuccin/cursors)
 - Font: JetBrainsMono Nerd Font
 
