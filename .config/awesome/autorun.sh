@@ -1,10 +1,9 @@
 #!/bin/sh
 
 run() {
-  if ! pgrep -f "$1" ;
-  then
-    "$@"&
-  fi
+    if ! pgrep -f "$1"; then
+        "$@"&
+    fi
 }
 
 dbus-update-activation-environment --all
