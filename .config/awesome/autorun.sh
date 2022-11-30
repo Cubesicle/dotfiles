@@ -11,7 +11,6 @@ gnome-keyring-daemon --start --components=secrets
 
 nitrogen --restore
 
-run gentoo-pipewire-launcher
 run picom --experimental-backends
 run nm-applet
 run udiskie -t
