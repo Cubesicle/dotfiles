@@ -103,6 +103,5 @@ source $ZSH/oh-my-zsh.sh
 # Dotfiles management alias
 alias dots="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
-export PATH=$HOME/.local/bin:$HOME/.cargo/bin:$PATH
-export EDITOR='lvim'
+# Flex your distro
 pfetch
