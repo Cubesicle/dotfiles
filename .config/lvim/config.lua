@@ -10,11 +10,10 @@ lvim.plugins = {
             require('leap').add_default_mappings()
         end,
     },
-    { "norcalli/nvim-colorizer.lua" },
     {
-        "ggandor/leap.nvim",
+        "NvChad/nvim-colorizer.lua",
         setup = function()
-            require'colorizer'.setup()
+            require 'colorizer'.setup()
         end,
     },
 }
