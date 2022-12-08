@@ -7,13 +7,13 @@ lvim.plugins = {
         "ggandor/leap.nvim",
         requires = { "tpope/vim-repeat" },
         config = function()
-            require('leap').add_default_mappings()
+            require("leap").add_default_mappings()
         end,
     },
     {
         "NvChad/nvim-colorizer.lua",
         setup = function()
-            require 'colorizer'.setup()
+            require("colorizer").setup()
         end,
     },
 }
