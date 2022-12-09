@@ -11,8 +11,14 @@ lvim.plugins = {
         end,
     },
     {
+        "jbyuki/instant.nvim",
+        config = function()
+            vim.g.instant_username = "cubesicle"
+        end,
+    },
+    {
         "NvChad/nvim-colorizer.lua",
-        setup = function()
+        config = function()
             require("colorizer").setup()
         end,
     },
