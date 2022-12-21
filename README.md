@@ -15,6 +15,7 @@ these are my dotfiles woah
 ## Programs Used
 
  - AwesomeWM
+ - Dunst
  - Flameshot
  - kitty
  - LunarVim
