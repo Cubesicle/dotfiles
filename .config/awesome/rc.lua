@@ -3,16 +3,17 @@ pcall(require, "luarocks.loader")
 
 local awful = require("awful")
 local gears = require("gears")
-local naughty = require("naughty")
 local beautiful = require("beautiful")
+
 
 require("awful.autofocus")
 require("awful.hotkeys_popup.keys")
 
 local config = require("config")
 
--- Set theme
-beautiful.init(gears.filesystem.get_configuration_dir() .. "/themes/" .. config.general.theme)
+-- Disable naughty if it's disabled in the config
+if not config.general.enable_naughty then package.loaded["naughty.dbus"] = {} end
+local naughty = require("naughty")
 
 -- Functions
 local function sort_screens()
@@ -41,13 +42,26 @@ local function sort_screens()
     end
 end
 
+local function notify(title, message, urgency)
+    local preset;
+    if     urgency == "low"      then preset = naughty.config.presets.low
+    elseif urgency == "normal"   then preset = naughty.config.presets.normal
+    elseif urgency == "critical" then preset = naughty.config.presets.critical end
+
+    if config.general.enable_naughty then
+        naughty.notify({
+            preset = preset,
+            title = title,
+            text = message,
+        })
+    else
+        os.execute("notify-send -u " .. urgency .. " '" .. title .. "' '" .. message .. "'")
+    end
+end
+
 -- Error handling
 if awesome.startup_errors then
-    naughty.notify({
-        preset = naughty.config.presets.critical,
-        title = "Oops, there were errors during startup!",
-        text = awesome.startup_errors,
-    })
+    notify("Oops, there were errors during startup!", awesome.startup_errors, "critical")
 end
 
 do
@@ -57,14 +71,14 @@ do
         if in_error then return end
         in_error = true
 
-        naughty.notify({
-            preset = naughty.config.presets.critical,
-            title = "Oops, an error happened!",
-            text = tostring(err)
-        })
+        notify("Oops, an error happened!", tostring(err), "critical")
         in_error = false
     end)
 end
+
+
+-- Set theme
+beautiful.init(gears.filesystem.get_configuration_dir() .. "/themes/" .. config.general.theme)
 
 -- Set Layouts
 awful.layout.layouts = config.general.layouts

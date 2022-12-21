@@ -10,6 +10,7 @@ general.theme          = "catppuccin/theme.lua"
 general.terminal       = "kitty"
 general.editor         = os.getenv("EDITOR") or "nano"
 general.editor_cmd     = general.terminal .. " -e " .. general.editor
+general.enable_naughty = false
 general.bar_height     = 23
 general.widget_spacing = 7
 
