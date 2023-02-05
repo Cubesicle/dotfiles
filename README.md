@@ -33,7 +33,7 @@ these are my dotfiles woah
 
 1. Set the dots alias:
 ```bash
-alias dots="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias dots="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 ```
 2. Run this in the terminal:
 ```bash

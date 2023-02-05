@@ -101,7 +101,7 @@ source $ZSH/oh-my-zsh.sh
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
 # Dotfiles management alias
-alias dots="/usr/bin/git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
+alias dots="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 # Flex your distro
 pfetch
