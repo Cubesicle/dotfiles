@@ -123,7 +123,16 @@ awful.rules.rules = {
 
 -- Enable sloppy focus
 client.connect_signal("mouse::enter", function(c)
-    c:emit_signal("request::activate", "mouse_enter", {raise = false})
+    c:emit_signal("request::activate", "mouse_enter", { raise = false })
+end)
+
+-- Prevent minimize and maximize
+client.connect_signal("property::minimized", function(c)
+    c.minimized = false
+end)
+
+client.connect_signal("property::maximized", function(c)
+    c.maximized = false
 end)
 
 -- Set client borders
