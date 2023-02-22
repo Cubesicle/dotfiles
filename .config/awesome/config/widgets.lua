@@ -20,12 +20,20 @@ local awesome_menu = {
     { "hotkeys", function() hotkeys_popup.show_help(nil, awful.screen.focused()) end },
     { "manual", general.terminal .. " -e man awesome" },
     { "restart", awesome.restart },
-    { "quit", function() awesome.quit() end }
+    { "quit", function() awesome.quit() end },
+}
+
+local power_menu = {
+    { "poweroff", "sh -c 'loginctl poweroff'" },
+    { "reboot", "sh -c 'loginctl reboot'" },
+    { "suspend", "sh -c 'loginctl suspend'" },
+    { "hibernate", "sh -c 'loginctl hibernate'" },
 }
 
 local main_menu = awful.menu({
     items = {
         { "awesome", awesome_menu, beautiful.awesome_icon },
+        { "power", power_menu },
         { "open terminal", general.terminal },
         { "rofi launcher", "sh -c 'sleep 0.15; rofi -show drun'" },
     },
