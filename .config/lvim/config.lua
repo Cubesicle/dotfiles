@@ -1,8 +1,8 @@
 -- Additional Plugins
 lvim.plugins = {
-    {
-        "catppuccin/nvim",
-    },
+    "catppuccin/nvim",
+    "mattn/emmet-vim",
+    "mustache/vim-mustache-handlebars",
     {
         "ggandor/leap.nvim",
         requires = { "tpope/vim-repeat" },
@@ -15,9 +15,6 @@ lvim.plugins = {
         config = function()
             vim.g.instant_username = "cubesicle"
         end,
-    },
-    {
-        "mattn/emmet-vim",
     },
     {
         "simrat39/rust-tools.nvim",
