@@ -8,3 +8,4 @@ export XDG_DATA_DIRS="$HOME/.nix-profile/share:$XDG_DATA_DIRS"
 
 # Rust
 export PATH="$HOME/.cargo/bin:$PATH"
+. "$HOME/.cargo/env"
