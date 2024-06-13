@@ -104,4 +104,11 @@ source $ZSH/oh-my-zsh.sh
 alias dots="git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME"
 
 # Flex your distro
-pfetch
+fastfetch -c ~/.config/fastfetch/pfetch.jsonc
+
+# bun completions
+[ -s "/home/cubesicle/.bun/_bun" ] && source "/home/cubesicle/.bun/_bun"
+
+# bun
+export BUN_INSTALL="$HOME/.bun"
+export PATH="$BUN_INSTALL/bin:$PATH"
